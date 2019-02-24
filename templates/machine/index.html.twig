@@ -2,15 +2,6 @@
 
 {% block title %}Welcome!{% endblock %}
 
-{% block stylesheets %}
-<style type="text/css">
-    .tg  {border-collapse:collapse;border-spacing:0;}
-    .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-    .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-    .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-    </style>
-{% endblock %}
-
 {% block body %}
 
 <h1>Добро пожаловать в приложение Coffe Machine</h1>  
@@ -33,33 +24,33 @@
 </table>
     <div id="acceptor">
         <p>К оплате <span id="buyPrice">0</span> рублей</p>
-        <p>Вы внесли <span id="payAmount">0</span> рублей</p>
+        <p>Вы внесли <span id="payDepositing">0</span> рублей</p>
         <h3>Купюроприёмник</h3>
-        <button onclick="addPayAmount(10, 1)">Внести 10 рублей</button>
-        <button onclick="addPayAmount(50, 1)">Внести 50 рублей</button>
-        <button onclick="addPayAmount(100, 1)">Внести 100 рублей</button>
-        <button onclick="addPayAmount(1000, 1)">Внести 1000 рублей</button>
+        <button onclick="addPayDepositing(10, 1)">Внести 10 рублей</button>
+        <button onclick="addPayDepositing(50, 1)">Внести 50 рублей</button>
+        <button onclick="addPayDepositing(100, 1)">Внести 100 рублей</button>
+        <button onclick="addPayDepositing(1000, 1)">Внести 1000 рублей</button>
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной купюры</label>
             <input type="number" id="oneNote">
-            <button onclick="addOnePayAmount(1)">Внести</button>
+            <button onclick="addOnePayDepositing(1)">Внести</button>
         </div>
         
         <h3>Монетоприёмник</h3>
-        <button onclick="addPayAmount(1, 2)">Внести 1 рубль</button>
-        <button onclick="addPayAmount(2, 2)">Внести 2 рубля</button>
-        <button onclick="addPayAmount(5, 2)">Внести 5 рублей</button>
-        <button onclick="addPayAmount(10, 2)">Внести 10 рублей</button>
+        <button onclick="addPayDepositing(1, 2)">Внести 1 рубль</button>
+        <button onclick="addPayDepositing(2, 2)">Внести 2 рубля</button>
+        <button onclick="addPayDepositing(5, 2)">Внести 5 рублей</button>
+        <button onclick="addPayDepositing(10, 2)">Внести 10 рублей</button>
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной монеты</label>
             <input type="number" id="oneCoin">
-            <button onclick="addOnePayAmount(2)">Внести</button>
+            <button onclick="addOnePayDepositing(2)">Внести</button>
         </div>
     </div>
     <form action="/order" method="POST">
-        <input type="hidden" name="payAmount" id="inpPayAmount">
+        <input type="hidden" name="payDepositing" id="inpPayDepositing">
         <input type="hidden" name="beverageId" id="inpBeverageId">
         <input type="hidden" name="beverageTypeId" id="inpBeverageTypeId">
         <button type="submit">Получить заказ</button>
@@ -71,7 +62,7 @@
 <script>
     var $note = [];
     var $coin = [];
-    var $payAmount = 0;
+    var $payDepositing = 0;
 
     function buy($id, $price, $beveragetype){
         document.getElementById('buyPrice').textContent = $price;
@@ -80,7 +71,7 @@
 
     }
 
-    function addPayAmount($amount, $type){
+    function addPayDepositing($amount, $type){
         switch($type){
             case 1:
                 $note.push($amount);
@@ -89,13 +80,13 @@
                 $coin.push($amount);
                 break;
         }
-        $payAmount = $note.reduce((a,b) => a+b, 0) + $coin.reduce((a,b) => a+b, 0);
+        $payDepositing = $note.reduce((a,b) => a+b, 0) + $coin.reduce((a,b) => a+b, 0);
 
-        document.getElementById('payAmount').textContent = $payAmount;
-        document.getElementById('inpPayAmount').value = $payAmount; 
+        document.getElementById('payDepositing').textContent = $payDepositing;
+        document.getElementById('inpPayDepositing').value = $payDepositing; 
     }
 
-    function addOnePayAmount($type){
+    function addOnePayDepositing($type){
         var $noteList = [10,50,100,1000];
         var $coinList = [1,2,5,10];
 
@@ -104,7 +95,7 @@
                 var $note = +document.getElementById('oneNote').value;
 
                 if($noteList.includes($note)){
-                    addPayAmount($note, 1);
+                    addPayDepositing($note, 1);
                 }else{
                     alert("Купюра с номиналом " + $note + " не поддерживается.");
                 }
@@ -113,7 +104,7 @@
                 var $coin = +document.getElementById('oneCoin').value;
 
                 if($coinList.includes($coin)){
-                    addPayAmount($coin, 2);
+                    addPayDepositing($coin, 2);
                 }else{
                     alert("Монета с номиналом " + $coin + " не поддерживается.");
                 }

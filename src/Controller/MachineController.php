@@ -35,13 +35,19 @@ class MachineController extends AbstractController
         $id = $request->get('beverageId');
         $type = $request->get('beverageTypeId');
         $factory = new BeverageFactory();
-        dump($factory->createBeverage($this->getDoctrine(), $id, $type));
-        $order = [
-            'beverage' => 'test'
+        $beverage = $factory->createBeverage($this->getDoctrine(), $id, $type);
+        $result = [
+            'beverage' => $beverage,
+            'delivery' => $this->payment($request->get('payDepositing'), $beverage->beveragePrice)
         ];
-        return $this->render('machine/order.html.twig',[
-            'order' => $order
-        ]);
+        return $this->render('machine/order.html.twig',[ 
+            "order" => $result
+         ]);
+    }
+
+    
+    public function payment($payDepositing, $beveragePrice){
+        return $payDepositing - $beveragePrice;
     }
 
 }
