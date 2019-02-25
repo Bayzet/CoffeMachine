@@ -4,5 +4,5 @@ namespace App\Factory;
 
 interface BeverageInterface
 {
-    public function __construct($orm, $id);
+    public function __construct($entity);
 }

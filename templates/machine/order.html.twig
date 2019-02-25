@@ -3,5 +3,36 @@
 {% block title %}Welcome!{% endblock %}
 
 {% block body %}
-{{ order.beverage }}
+<h1>Ваш заказ</h1>
+<table class="tg">
+    <thead>
+        <tr>
+            <td class="tg-0pky">Название</td>
+            <td class="tg-0pky">Объём/мл</td>
+            <td class="tg-0pky">Цвет напитка</td>
+            <td class="tg-0pky">Материал упаковки</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="tg-0pky">{{ order.beverage.beverageName }}</td>
+            <td class="tg-0pky">{{ order.beverage.packingVolume }}</td>
+            <td class="tg-0pky">{{ order.beverage.beverageColor }}</td>
+            <td class="tg-0pky">{{ order.beverage.packingMaterial }}</td>
+        </tr>
+    </tbody>
+</table>
+<h1>Ваша сдача: {{ order.delivery.amount }}</h1>
+<h3>Купюры:</h3>
+{% if order.delivery.note %}
+    {% for key, note in order.delivery.note %}
+        <p>Наминал {{ key }} количество {{ note }}</p>
+    {% endfor %}
+{% endif %}
+<h3>Монеты:</h3>
+{% if order.delivery.coin %}
+    {% for key, coin in order.delivery.coin %}
+        <p>Наминал {{ key }} количество {{ coin }}</p>
+    {% endfor %}
+{% endif %}
 {% endblock %}

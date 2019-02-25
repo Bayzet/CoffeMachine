@@ -6,23 +6,25 @@ use App\Factory\CoffeBeverage;
 use App\Factory\TeaBeverage;
 use App\Factory\JuiceBeverage;
 
+use App\Entity\Beverage;
+
 class BeverageFactory
 {
     /**
      * @param int $id
      * @param int $type
      */
-    public function createBeverage($orm, $id, $type)
+    public function createBeverage($entityBeverage)
     {
-        switch($type){
+        switch($entityBeverage->getBeverageTypeId()){
             case 1:
-                return new TeaBeverage($orm, $id);
+                return new TeaBeverage($entityBeverage);
                 break;
             case 2:
-                return new CoffeBeverage($orm, $id);
+                return new CoffeBeverage($entityBeverage);
                 break;
             case 3:
-                return new JuiceBeverage($orm, $id);
+                return new JuiceBeverage($entityBeverage);
                 break;
         }
     }
