@@ -18,7 +18,7 @@
             <td class="tg-0pky">{{ beverage.getName() }}</td>
             <td class="tg-0pky">{{ beverage.getPrice() }}</td>
             <td class="tg-0pky">{{ beverage.getDescription() }}</td>
-            <td class="tg-0pky"><button onclick="buy({{ beverage.getId() }}, {{ beverage.getPrice() }}, {{ beverage.getBeverageTypeId() }})">Выбрать</button></td>
+            <td class="tg-0pky"><button onclick="buy({{ beverage.getId() }}, {{ beverage.getPrice() }})">Выбрать</button></td>
         </tr>
       {% endfor %}
 </table>
@@ -26,10 +26,9 @@
         <p>К оплате <span id="buyPrice">0</span> рублей</p>
         <p>Вы внесли <span id="payDepositing">0</span> рублей</p>
         <h3>Купюроприёмник</h3>
-        <button onclick="addPayDepositing(10, 1)">Внести 10 рублей</button>
-        <button onclick="addPayDepositing(50, 1)">Внести 50 рублей</button>
-        <button onclick="addPayDepositing(100, 1)">Внести 100 рублей</button>
-        <button onclick="addPayDepositing(1000, 1)">Внести 1000 рублей</button>
+        {% for note in money.note %}
+            <button onclick="addPayDepositing({{note}}, 1)">Внести {{ note }} рублей</button>
+        {% endfor %}
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной купюры</label>
@@ -38,10 +37,9 @@
         </div>
         
         <h3>Монетоприёмник</h3>
-        <button onclick="addPayDepositing(1, 2)">Внести 1 рубль</button>
-        <button onclick="addPayDepositing(2, 2)">Внести 2 рубля</button>
-        <button onclick="addPayDepositing(5, 2)">Внести 5 рублей</button>
-        <button onclick="addPayDepositing(10, 2)">Внести 10 рублей</button>
+        {% for coin in money.coin %}
+            <button onclick="addPayDepositing({{coin}}, 2)">Внести {{ coin }} рублей</button>
+        {% endfor %}
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной монеты</label>
@@ -52,7 +50,6 @@
     <form action="/order" method="POST">
         <input type="hidden" name="payDepositing" id="inpPayDepositing">
         <input type="hidden" name="beverageId" id="inpBeverageId">
-        <input type="hidden" name="beverageTypeId" id="inpBeverageTypeId">
         <button type="submit">Получить заказ</button>
     </form>
 {% endblock %}
@@ -60,14 +57,15 @@
 {% block javascripts %}
 
 <script>
+    const $noteList = JSON.parse('{{ money_json|raw }}').note;
+    const $coinList = JSON.parse('{{ money_json|raw }}').coin;
     var $note = [];
     var $coin = [];
     var $payDepositing = 0;
 
-    function buy($id, $price, $beveragetype){
+    function buy($id, $price){
         document.getElementById('buyPrice').textContent = $price;
         document.getElementById('inpBeverageId').value = $id;
-        document.getElementById('inpBeverageTypeId').value = $beveragetype;
 
     }
 
@@ -87,8 +85,6 @@
     }
 
     function addOnePayDepositing($type){
-        var $noteList = [10,50,100,1000];
-        var $coinList = [1,2,5,10];
 
         switch($type){
             case 1:
