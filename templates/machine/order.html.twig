@@ -22,6 +22,17 @@
         </tr>
     </tbody>
 </table>
-<h1>Ваша сдача</h1>
-{{ order.delivery }}
+<h1>Ваша сдача: {{ order.delivery.amount }}</h1>
+<h3>Купюры:</h3>
+{% if order.delivery.note %}
+    {% for key, note in order.delivery.note %}
+        <p>Наминал {{ key }} количество {{ note }}</p>
+    {% endfor %}
+{% endif %}
+<h3>Монеты:</h3>
+{% if order.delivery.coin %}
+    {% for key, coin in order.delivery.coin %}
+        <p>Наминал {{ key }} количество {{ coin }}</p>
+    {% endfor %}
+{% endif %}
 {% endblock %}
