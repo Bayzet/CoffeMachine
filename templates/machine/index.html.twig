@@ -7,51 +7,56 @@
 <h1>Добро пожаловать в приложение Coffe Machine</h1>  
 
 <table class="tg">
-    <tr>
-      <th class="tg-0pky">Название</th>
-      <th class="tg-0pky">Цена/руб.</th>
-      <th class="tg-0pky">Описание</th>
-      <th class="tg-0pky">Действие</th>
-    </tr>
-      {% for beverage in beverages %}
+    <thead>
         <tr>
-            <td class="tg-0pky">{{ beverage.getName() }}</td>
-            <td class="tg-0pky">{{ beverage.getPrice() }}</td>
-            <td class="tg-0pky">{{ beverage.getDescription() }}</td>
-            <td class="tg-0pky"><button onclick="buy({{ beverage.getId() }}, {{ beverage.getPrice() }})">Выбрать</button></td>
+          <td class="tg-0pky">Название</td>
+          <td class="tg-0pky">Цена</td>
+          <td class="tg-0pky">Описание</td>
+          <td class="tg-0pky">Действие</td>
         </tr>
-      {% endfor %}
+    </thead>
+    <tbody>
+        {% for beverage in beverages %}
+          <tr>
+              <td class="tg-0pky">{{ beverage.getName() }}</td>
+              <td class="tg-0pky">{{ beverage.getPrice() }}</td>
+              <td class="tg-0pky">{{ beverage.getDescription() }}</td>
+              <td class="tg-0pky"><button onclick="buy({{ beverage.getId() }}, {{ beverage.getPrice() }})">Выбрать</button></td>
+          </tr>
+        {% endfor %}
+    </tbody>
 </table>
     <div id="acceptor">
-        <p>К оплате <span id="buyPrice">0</span> рублей</p>
-        <p>Вы внесли <span id="payDepositing">0</span> рублей</p>
+        <p>К оплате <span id="buyPrice">0</span></p>
+        <p>Вы внесли <span id="payDepositing">0</span></p>
         <h3>Купюроприёмник</h3>
         {% for note in money.note %}
-            <button onclick="addPayDepositing({{note}}, 1)">Внести {{ note }} рублей</button>
+            <button onclick="addPayDepositing({{note}}, 1)">Внести {{ note }}</button>
         {% endfor %}
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной купюры</label>
-            <input type="number" id="oneNote">
+            <input type="number" id="oneNote"  value="0">
             <button onclick="addOnePayDepositing(1)">Внести</button>
         </div>
         
         <h3>Монетоприёмник</h3>
         {% for coin in money.coin %}
-            <button onclick="addPayDepositing({{coin}}, 2)">Внести {{ coin }} рублей</button>
+            <button onclick="addPayDepositing({{coin}}, 2)">Внести {{ coin }}</button>
         {% endfor %}
         <p></p>
         <div>
             <label for="oneNote">Введите наминал одной монеты</label>
-            <input type="number" id="oneCoin">
+            <input type="number" id="oneCoin" value="0">
             <button onclick="addOnePayDepositing(2)">Внести</button>
         </div>
+        <form action="/order" method="POST">
+            <input type="hidden" name="payDepositing" id="inpPayDepositing">
+            <input type="hidden" name="beverageId" id="inpBeverageId">
+            <button type="submit">Получить заказ</button>
+        </form>
     </div>
-    <form action="/order" method="POST">
-        <input type="hidden" name="payDepositing" id="inpPayDepositing">
-        <input type="hidden" name="beverageId" id="inpBeverageId">
-        <button type="submit">Получить заказ</button>
-    </form>
+    <p><span style="color: red;">*</span> Все значения указаны в рублях</p>
 {% endblock %}
 
 {% block javascripts %}
@@ -62,14 +67,18 @@
     var $note = [];
     var $coin = [];
     var $payDepositing = 0;
+    var $buyPrice = 0;
 
     function buy($id, $price){
+        $buyPrice = $price;
         document.getElementById('buyPrice').textContent = $price;
         document.getElementById('inpBeverageId').value = $id;
 
     }
 
     function addPayDepositing($amount, $type){
+        chekByPrice();
+        
         switch($type){
             case 1:
                 $note.push($amount);
@@ -85,26 +94,39 @@
     }
 
     function addOnePayDepositing($type){
+        chekByPrice();
 
         switch($type){
             case 1:
-                var $note = +document.getElementById('oneNote').value;
+                var $note = document.getElementById('oneNote');
 
-                if($noteList.includes($note)){
-                    addPayDepositing($note, 1);
+                if($noteList.includes(+$note.value)){
+                    addPayDepositing(+$note.value, 1);
                 }else{
-                    alert("Купюра с номиналом " + $note + " не поддерживается.");
+                    alert("Купюра с номиналом " + $note.value + " не поддерживается.");
+                    $note.value = 0;
                 }
                 break;
             case 2:
-                var $coin = +document.getElementById('oneCoin').value;
+                var $coin = +document.getElementById('oneCoin');
 
-                if($coinList.includes($coin)){
-                    addPayDepositing($coin, 2);
+                if($coinList.includes(+$coin.value)){
+                    addPayDepositing(+$coin.value, 2);
                 }else{
-                    alert("Монета с номиналом " + $coin + " не поддерживается.");
+                    alert("Монета с номиналом " + $coin.value + " не поддерживается.");
+                    $coin.value = 0;
                 }
                 break;
+        }
+    }
+
+    function chekByPrice(){
+        if($buyPrice == 0){
+            alert("Необходимо выбрать напиток");
+            throw new Error("Не выбран напиток");
+        }else if($buyPrice < $payDepositing){
+            alert("Внесено достаточно средств")
+            throw new Error("Внесено достаточно средств");
         }
     }
 </script>
