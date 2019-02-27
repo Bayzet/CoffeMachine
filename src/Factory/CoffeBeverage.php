@@ -6,6 +6,6 @@ use App\Factory\BeverageAbstract;
 
 class CoffeBeverage extends BeverageAbstract
 {
-    public $packingVolume = 150; // Объём упаковки
-    public $packingMaterial = 'Бумага'; // Материал упаковки
+    protected $packingVolume = 150; // Объём упаковки
+    protected $packingMaterial = 'Бумага'; // Материал упаковки
 }
