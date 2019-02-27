@@ -50,7 +50,7 @@
             <input type="number" id="oneCoin" value="0">
             <button onclick="addOnePayDepositing(2)">Внести</button>
         </div>
-        <form action="/order" method="POST">
+        <form action="/order" method="POST" onsubmit="chekByPriceBeforeSubmit(); return $sendPermission">
             <input type="hidden" name="payDepositing" id="inpPayDepositing">
             <input type="hidden" name="beverageId" id="inpBeverageId">
             <button type="submit">Получить заказ</button>
@@ -67,6 +67,7 @@
     var $coin = [];
     var $payDepositing = 0;
     var $buyPrice = 0;
+    var $sendPermission = false;
 
     function buy($id, $price){
         $buyPrice = $price;
@@ -124,8 +125,18 @@
             alert("Необходимо выбрать напиток");
             throw new Error("Не выбран напиток");
         }else if($buyPrice < $payDepositing){
-            alert("Внесено достаточно средств")
+            alert("Внесено достаточно средств");
             throw new Error("Внесено достаточно средств");
+        }
+    }
+
+    function chekByPriceBeforeSubmit(){
+        if($buyPrice == 0){
+            alert("Необходимо выбрать напиток");
+        }else if($buyPrice > $payDepositing){
+            alert("Внесено не достаточно средств");
+        }else{
+            $sendPermission = true;
         }
     }
 </script>
