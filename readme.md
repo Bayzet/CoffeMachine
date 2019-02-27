@@ -9,3 +9,10 @@ php -S 127.0.0.1:8000 -t public
 php bin/console doctrine:migrations:migrate
 ```
 После, нужно открыть браузер по ссылке http://localhost:8000
+
+# Unit тесты
+В проекте для тестирования используется PHPUnit.
+Для запуска тестирования введите в консоль команду
+```bash
+php bin\phpunit
+```
