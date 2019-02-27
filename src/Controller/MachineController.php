@@ -46,8 +46,16 @@ class MachineController extends AbstractController
         $factory = new BeverageFactory();
         $beverage = $factory->createBeverage($entityBeverage);
         $delivery = $this->payment($payDepositing - $beverage->beveragePrice);
+
         $result = [
-            'beverage' => $beverage,
+            'beverage' => [
+                'beverageName'      => $beverage->beverageName,
+                'beveragePrice'     => $beverage->beveragePrice,
+                'beverageType'      => $beverage->beverageType,
+                'beverageColor'     => $beverage->beverageColor,
+                'packingVolume'     => $beverage->packingVolume,
+                'packingMaterial'   => $beverage->packingMaterial,
+            ],
             'delivery' => $delivery
         ];
 
