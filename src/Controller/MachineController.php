@@ -74,41 +74,27 @@ class MachineController extends AbstractController
         if($itteration++ == 0)
             $result['amount'] = $delivery;
 
-            
         if($delivery != 0){
             $tmp = [];
-            foreach($this::MONEY['note'] as $note){
-                $diff = floor($delivery/$note);
-                if($diff >= 1)
-                    $tmp['note'][$note] = $diff;
-            }
-            foreach($this::MONEY['coin'] as $coin){
-                $diff = floor($delivery/$coin);
-                if($diff >= 1)
-                    $tmp['coin'][$coin] = $diff;
-            }
-            // За счёт того, что в константе MONEY наминал расположен упорядоченно
-            // достаточно ksort и последнего элемента массива для понимания
-            ksort($tmp);
-            $tmp2 = [];
-            foreach($tmp as $key => $money){
-                // dump($value);
-                foreach($money as $key => $value){
-                    if(count($value) > 0){
-                        $tmp2[$key] = $value;
-                    }
+            // Считаем сколько едениц каждого наминала нам понадобится
+            // и добавляем в массив только подходящие
+            foreach($this::MONEY as $money){
+                foreach($money as $value){
+                    $diff = floor($delivery/$value);
+                    if($diff >= 1)
+                        $tmp[$value] = $diff;
                 }
             }
-            ksort($tmp2);
+            ksort($tmp);
 
-            // На этом этапе в $tmp2 всегда последний элемент самый подходящий
-            // И последний элемент всегда тот номинал которого нужно меньше всего чтобы вернуть сдачу
+            // После ksort в $tmp всегда последний элемент это номинал
+            // наименьшее количество которого нам нужно для сдачи
             $i = 1;
-            $countTmp2 = count($tmp2);
+            $countTmp = count($tmp);
             $noteList = $this::MONEY['note'];
             $coinList = $this::MONEY['coin'];
-            foreach($tmp2 as $key => $value){
-                if($i++ == $countTmp2){
+            foreach($tmp as $key => $value){
+                if($i++ == $countTmp){
                     if(in_array($key, $noteList)){
                         $result['note'][$key] = $value;
                         $delivery -= $key * $value;
@@ -118,6 +104,7 @@ class MachineController extends AbstractController
                     }
                 }
             }
+            
             return $this->payment($delivery);
         }else{
             return $result;
