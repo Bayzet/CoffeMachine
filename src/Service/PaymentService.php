@@ -41,15 +41,17 @@ class PaymentService
                         $tmp[$value] = $diff;
                 }
             }
-            ksort($tmp);
-
             // После ksort в $tmp всегда последний элемент это номинал
             // наименьшее количество которого нам нужно для сдачи
+            ksort($tmp);
+
             $i = 1;
             $countTmp = count($tmp);
             $noteList = $this::MONEY['note'];
             $coinList = $this::MONEY['coin'];
             foreach($tmp as $key => $value){
+                // В связи со спецификой формирования массива
+                // использование array_pop не представляется возможным
                 if($i++ == $countTmp){
                     if(in_array($key, $noteList)){
                         $result['note'][$key] = $value;
