@@ -12,12 +12,10 @@ abstract class BeverageAbstract implements BeverageInterface
     protected $beverageType; // Тип упоковки
     protected $beverageColor; // Цвет напитка
     protected $beverageName; // Название напитка
-    protected $beveragePrice; // Название напитка
+    protected $beveragePrice; // Стоймость напитка
 
     public function __construct($entityBeverage)
     {
-        // $beverage = $orm->getRepository(Beverage::class)->find($id);
-
         $this->beverageType = $entityBeverage->getBeverageType()->getName();
         $this->beverageColor = $entityBeverage->getBeverageColor();
         $this->beverageName = $entityBeverage->getName();
@@ -27,7 +25,7 @@ abstract class BeverageAbstract implements BeverageInterface
     /**
      * @param string $name
      *
-     * @return mixed|null
+     * @return string|integer
      */
     public function __get($name){
         return $this->$name;

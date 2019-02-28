@@ -10,9 +10,11 @@ use App\Entity\Beverage;
 
 class BeverageFactory
 {
-    /**
-     * @param int $id
-     * @param int $type
+    /** 
+     * Метод создаёт нужный объект
+     * 
+     * @param Beverage $entityBeverage - модель напитка который оплатили
+     * @return object
      */
     public function createBeverage($entityBeverage)
     {
