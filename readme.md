@@ -12,7 +12,7 @@ php bin/console doctrine:migrations:migrate
 
 # Unit тесты
 В проекте для тестирования используется PHPUnit.
-Для запуска тестирования введите в консоль команду
+Для запуска тестов введите в консоль команду
 ```bash
 php bin\phpunit
 ```

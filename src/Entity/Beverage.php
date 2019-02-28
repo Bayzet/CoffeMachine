@@ -115,7 +115,7 @@ class Beverage
     protected $beverageType;
      
     /**
-     * Узнать, к какому дому относится данный юзер (когда уже связаны)
+     * Узнать, тип напитка
      * 
      * @return beverageType
      */
